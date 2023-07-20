@@ -38,12 +38,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'backend',
+    'token_auth',
     'rest_framework.authtoken',
     'allauth',
     'allauth.account',
     'dj_rest_auth',
     'dj_rest_auth.registration',
-    'token_auth',
 ]
 
 MIDDLEWARE = [
@@ -138,3 +138,7 @@ REST_FRAMEWORK = {
 ]
 }
 SITE_ID = 1
+
+
+
+AUTH_USER_MODEL = 'token_auth.User'
