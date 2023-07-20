@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.generics import CreateAPIView, ListAPIView
-from serializers import ItemSerializer
+from .serializers import ItemSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
