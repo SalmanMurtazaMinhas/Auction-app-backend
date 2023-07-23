@@ -8,7 +8,9 @@ class Photo(models.Model):
 
 class Bid(models.Model):
     bid_amount = models.IntegerField()
-    # bidder = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)
+    user = models.CharField(max_length=255)
+    name_of_item = models.CharField(max_length=255)
+
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -18,10 +20,11 @@ class Item(models.Model):
     name = models.CharField(max_length=255)
     condition = models.CharField(max_length=255)
     description = models.CharField(max_length=600)
-    image = models.CharField(max_length=255)
+    # image = models.CharField(max_length=255)
     starting_bid = models.IntegerField()
-    # category =  models.ForeignKey(Category, related_name='user', on_delete=models.CASCADE)
+    category =  models.ForeignKey(Category, related_name='user', on_delete=models.CASCADE)
     owner = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)
+    current_bids = []
 
 
     def __str__(self):

@@ -31,6 +31,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SITE_ID = 1
+
 
 # Application definition
 
@@ -48,10 +50,15 @@ INSTALLED_APPS = [
     'allauth.account',
     'dj_rest_auth',
     'dj_rest_auth.registration',
-    'cloudinary'
+
+    'cloudinary',
+  
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -59,6 +66,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
 ]
 
 ROOT_URLCONF = "PROJECT04.urls"
@@ -90,7 +101,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": 'auction-app',
         'USER': 'postgres',
-        'PASSWORD': ''
+        'PASSWORD': '12345678'
     }
 }
 
@@ -142,7 +153,7 @@ REST_FRAMEWORK = {
 "rest_framework.authentication.TokenAuthentication",
 ]
 }
-SITE_ID = 1
+
 
 
 
