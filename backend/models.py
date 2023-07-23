@@ -1,9 +1,10 @@
 from django.db import models
 from token_auth.models import User
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
-
-
+class Photo(models.Model):
+  image = CloudinaryField('image')
 
 class Bid(models.Model):
     bid_amount = models.IntegerField()
