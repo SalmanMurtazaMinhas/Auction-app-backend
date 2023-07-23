@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -46,6 +50,9 @@ INSTALLED_APPS = [
     'allauth.account',
     'dj_rest_auth',
     'dj_rest_auth.registration',
+
+    'cloudinary',
+  
     "corsheaders",
 ]
 
@@ -92,7 +99,7 @@ WSGI_APPLICATION = "PROJECT04.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": 'auction',
+        "NAME": 'auction-app',
         'USER': 'postgres',
         'PASSWORD': '12345678'
     }
@@ -151,3 +158,10 @@ REST_FRAMEWORK = {
 
 
 AUTH_USER_MODEL = 'token_auth.User'
+
+cloudinary.config( 
+  cloud_name = "auction-app", 
+  api_key = "851176749362114", 
+  api_secret = "21Smzu4pDpFe9YaOeN-DdLz5VK8",
+  secure = True
+)
