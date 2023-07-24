@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'cloudinary',
   
     "corsheaders",
+    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [
