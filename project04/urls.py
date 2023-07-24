@@ -21,6 +21,4 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('', include('backend.urls')),
     path('auth/', include('token_auth.urls'))
-
-    
 ]

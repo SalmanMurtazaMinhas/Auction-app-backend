@@ -7,8 +7,8 @@ from token_auth.models import User
 
 class Bid(models.Model):
     bid_amount = models.IntegerField()
-    user = models.CharField(max_length=255)
-    name_of_item = models.CharField(max_length=255)
+    bidder_id = models.IntegerField()
+    item_id = models.IntegerField()
 
 
 class Category(models.Model):
@@ -21,9 +21,9 @@ class Item(models.Model):
     description = models.CharField(max_length=600)
     # image = models.CharField(max_length=255)
     starting_bid = models.IntegerField()
-    category =  models.ForeignKey(Category, related_name='user', on_delete=models.CASCADE)
+    category =  models.ForeignKey(Category, related_name='category', on_delete=models.CASCADE)
     owner = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)
-    current_bids = []
+    # current_bids = models.ForeignKey(Bid, related_name='bid', on_delete=models.CASCADE, blank=True, null=True)
 
 
     def __str__(self):
@@ -31,4 +31,7 @@ class Item(models.Model):
     
 
 
-    
+
+class AuctionList(models.Model):
+    item = models.CharField(max_length=255)
+    bid = models.CharField(max_length=255)
