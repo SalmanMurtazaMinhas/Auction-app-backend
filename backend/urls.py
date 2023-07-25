@@ -12,6 +12,6 @@ urlpatterns = [
     # path('/api/items/detail/${props.itemId}', get_item_details, name='get_item_details'),
     path('api/items/detail/<pk>/', ItemDetailsView.as_view()),
     path('api/items/lastbid/', BidsList.as_view()),
-    path('api/items/detail/bid/', PlaceBid.as_view()),
+    path('api/items/detail/<pk>/bid/', PlaceBid.as_view()),
     # path('api/items/detail/<pk>/bid', place_bid, name="place_bid")
 ]
