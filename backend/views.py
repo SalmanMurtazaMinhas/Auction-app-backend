@@ -48,10 +48,18 @@ class ItemListView(ListAPIView):
         return Item.objects.filter(owner=user)
     serializer_class = ItemSerializer
 
+
+        
+
+
+
 class PlaceBid(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
+
+
     def post(self, request,  *args, **kwargs):
+        
         user = request.user
         user_id = request.user.id
 
@@ -114,21 +122,21 @@ class PlaceBid(APIView):
                 # print(dir(saved_bid))
                 # print(saved_bid.id)
                 # Save in auction list table
-                di = {}
-                di['item'] =  int(current_item['id'])
-                di['bid'] =  int(saved_bid.id)
-                auctionlistserializer = AuctionListSerializer(data=di)
+                # di = {}
+                # di['item'] =  int(current_item['id'])
+                # di['bid'] =  int(saved_bid.id)
+                # auctionlistserializer = AuctionListSerializer(data=di)
  
-                print(auctionlistserializer.is_valid())
-                if auctionlistserializer.is_valid():
-                    auction = auctionlistserializer.save()
-                    print(auctionlistserializer.validated_data)
+                # print(auctionlistserializer.is_valid())
+                # if auctionlistserializer.is_valid():
+                #     auction = auctionlistserializer.save()
+                #     print(auctionlistserializer.validated_data)
 
 
                 # Save new bid to current item
                 
                 # print(bidserializer.validated_data)
-                return Response(bidserializer.data)
+                return Response(bidserializer.data )
             else: 
                 print(bidserializer.errors)
                 return Response(None, status = 500)
@@ -148,7 +156,27 @@ class ItemDetailsView(RetrieveAPIView):
     serializer_class = ItemSerializer
 
 
-    # def place_bid(req):
+
+
+class BidsList(APIView):
+
+    def post(self, request):
+        
+        # print(request.data)
+        item_id = request.data['item_id']
+        # pk = self.kwargs.get('pk',None)
+        last_bid = Bid.objects.filter(item_id = item_id).earliest('bid_amount')
+        print(last_bid)
+        last_bid = Bid.objects.filter(item_id = item_id).latest('bid_amount')
+        print(last_bid)
+
+        last_bid_amount = last_bid.bid_amount
+        print(last_bid_amount)
+        
+        return Response(last_bid_amount, status = 200)
+    serializer_class = BidSerializer
+
+
 
     #     print('hi')
     # Get the bid amount placed
@@ -167,4 +195,3 @@ class ItemDetailsView(RetrieveAPIView):
 # def get_item_details(req, item_id):
 #     item = Item.objects.get(id=item_id)
 #     return render(req, {'item': item})
-
