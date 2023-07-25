@@ -45,7 +45,7 @@ class ItemCreateView(CreateAPIView):
 class ItemListView(ListAPIView):
     def get_queryset(self):
         user = self.request.user
-        return Item.objects.filter(owner=user)
+        return Item.objects.filter()
     serializer_class = ItemSerializer
 
 
@@ -58,6 +58,8 @@ class PlaceBid(APIView):
     authentication_classes = [TokenAuthentication]
     
     def post(self, request,  *args, **kwargs):
+        # user's balance
+        balance = request.user.money
         user = request.user
         user_id = request.user.id
 
@@ -102,6 +104,7 @@ class PlaceBid(APIView):
         
 
         # Check if new bid is higher than min amount
+
         if int(current_bid_placed) > min_bid:
         # If true, save a bid with user name, bid amonut, and name of item
             data['bid_amount'] = int(current_bid_placed)
@@ -159,7 +162,7 @@ class ItemDetailsView(RetrieveAPIView):
 class BidsList(APIView):
 
     def post(self, request):
-        
+
         # print(request.data)
         item_id = request.data['item_id']
         # pk = self.kwargs.get('pk',None)
@@ -193,3 +196,12 @@ class BidsList(APIView):
 # def get_item_details(req, item_id):
 #     item = Item.objects.get(id=item_id)
 #     return render(req, {'item': item})
+
+
+class MyItemsListView(ListAPIView):
+    def get_queryset(self):
+        print('hi')
+
+        user = self.request.user
+        return Item.objects.filter(owner=user)
+    serializer_class = ItemSerializer
