@@ -56,10 +56,8 @@ class ItemListView(ListAPIView):
 class PlaceBid(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
-
-
+    
     def post(self, request,  *args, **kwargs):
-        
         user = request.user
         user_id = request.user.id
 
