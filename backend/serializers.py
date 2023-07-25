@@ -15,3 +15,11 @@ class AuctionListSerializer(serializers.ModelSerializer):
     class Meta:
         model = AuctionList # Which model to serailise
         fields = '__all__' # Which fields from object 
+        
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+class PopulatedItemSerializer(ItemSerializer):
+    category = CategorySerializer()

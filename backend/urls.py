@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ItemCreateView, ItemListView, ItemDetailsView, PlaceBid, BidsList, MyItemsListView
+from .views import ItemCreateView, ItemListView, ItemDetailsView, PlaceBid, BidsList, MyItemsListView, CategoryListView
 
 # from .views import get_item_details
 
@@ -15,4 +15,6 @@ urlpatterns = [
     path('api/items/lastbid/', BidsList.as_view()),
     path('api/items/detail/<pk>/bid/', PlaceBid.as_view()),
     # path('api/items/detail/<pk>/bid', place_bid, name="place_bid")
+
+    path('api/category/list/', CategoryListView.as_view()),
 ]

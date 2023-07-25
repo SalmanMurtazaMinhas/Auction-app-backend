@@ -12,6 +12,11 @@ from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 
+from .serializers import ItemSerializer, CategorySerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.response import Response
+from .models import Item, Category
 # Create your views here.
 
 
@@ -205,3 +210,8 @@ class MyItemsListView(ListAPIView):
         user = self.request.user
         return Item.objects.filter(owner=user)
     serializer_class = ItemSerializer
+
+
+class CategoryListView(ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
