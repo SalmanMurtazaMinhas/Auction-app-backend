@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
-from .serializers import ItemSerializer
+from .serializers import ItemSerializer, CategorySerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
-from .models import Item
+from .models import Item, Category
 # Create your views here.
 
 
@@ -62,3 +62,7 @@ def place_bid(req):
     # Check if new bid is higher than min amount
     # If true, save a bid with user name, bid amonut, and name of item
     # If not, send error message
+
+class CategoryListView(ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
