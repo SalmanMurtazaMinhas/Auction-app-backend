@@ -8,6 +8,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from .models import Item, Bid, AuctionList
 from django.contrib import messages
+from token_auth.models import User
+from token_auth.serializer import UserSerializer
 
 
 from django.contrib.auth.decorators import login_required
@@ -54,19 +56,20 @@ class ItemListView(ListAPIView):
     serializer_class = ItemSerializer
 
 
-        
-
-
-
 class PlaceBid(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
     
     def post(self, request,  *args, **kwargs):
         # user's balance
-        balance = request.user.money
-        user = request.user
         user_id = request.user.id
+
+        current_user = User.objects.filter(id = user_id)
+        print(current_user)
+        current_money = current_user[0].money
+        print(current_money)
+
+        # print(request.data)
 
         data = request.data
         # print(data['newBid'])
@@ -105,55 +108,44 @@ class PlaceBid(APIView):
                 # If true, save min amount as the highest bid
                 min_bid = bid.bid_amount
 
-        print(min_bid)
+        # print(min_bid)
         
 
         # Check if new bid is higher than min amount
+        if (int(current_money) - int(current_bid_placed) > 0):
+            if int(current_bid_placed) > min_bid:
+            # If true, save a bid with user name, bid amonut, and name of item
+                data['bid_amount'] = int(current_bid_placed)
+                data['bidder_id'] = int(user_id)
+                data['item_id'] = int(current_item['id'])
+                bidserializer = BidSerializer(data=data)
+                # Checks whether the serializer has all of the data it needs
+                print(bidserializer.is_valid())
+                if bidserializer.is_valid():
+                    # Saves that data to the Database
+                    saved_bid = bidserializer.save()
 
-        if int(current_bid_placed) > min_bid:
-        # If true, save a bid with user name, bid amonut, and name of item
-            data['bid_amount'] = int(current_bid_placed)
-            data['bidder_id'] = int(user_id)
-            data['item_id'] = int(current_item['id'])
-            bidserializer = BidSerializer(data=data)
+                    # Save new balance
+                    new_money = int(current_money) - int(current_bid_placed)
+                    # current_user[0].money = new_money
+                    print(current_user)
+                    current_user.update(money= new_money)
+                    
 
-
-
-
-
-            # Checks whether the serializer has all of the data it needs
-            if bidserializer.is_valid():
-                # Saves that data to the Database
-                saved_bid = bidserializer.save()
-                # print(dir(saved_bid))
-                # print(saved_bid.id)
-                # Save in auction list table
-                # di = {}
-                # di['item'] =  int(current_item['id'])
-                # di['bid'] =  int(saved_bid.id)
-                # auctionlistserializer = AuctionListSerializer(data=di)
- 
-                # print(auctionlistserializer.is_valid())
-                # if auctionlistserializer.is_valid():
-                #     auction = auctionlistserializer.save()
-                #     print(auctionlistserializer.validated_data)
-
-
-                # Save new bid to current item
-                
-                # print(bidserializer.validated_data)
-                return Response(bidserializer.data )
+                    
+                    return Response(bidserializer.data )
+                else: 
+                    print(bidserializer.errors)
+                    return Response(None, status = 500)
+            # If not, send error message
             else: 
-                print(bidserializer.errors)
-                return Response(None, status = 500)
-        # If not, send error message
+                return Response("Bid amount is too low!", status = 200)
+
         else: 
-            return Response("Bid amount is too low!")
+            return Response("Not enough money ):", status = 200)
 
 
-
-    
-        #     print('hi')
+        
 
 
 
@@ -168,19 +160,24 @@ class BidsList(APIView):
 
     def post(self, request):
 
-        # print(request.data)
-        item_id = request.data['item_id']
-        # pk = self.kwargs.get('pk',None)
-        last_bid = Bid.objects.filter(item_id = item_id).earliest('bid_amount')
-        print(last_bid)
-        last_bid = Bid.objects.filter(item_id = item_id).latest('bid_amount')
-        print(last_bid)
+        _item_id = request.data.get('item_id')
+            # # pk = self.kwargs.get('pk',None)
+            # last_bid = Bid.objects.filter(item_id = item_id).earliest('bid_amount')
+            # print(last_bid)
+        last_bid = Bid.objects.filter(item_id = _item_id).order_by('bid_amount').last()
+            # last_bid = Bid.objects.filter(item_id = _item_id).latest('bid_amount')
 
-        last_bid_amount = last_bid.bid_amount
-        print(last_bid_amount)
-        
+        if last_bid:
+                last_bid_amount = last_bid.bid_amount
+                # print(last_bid_amount)
+        else: 
+                last_bid_amount = 0
+            
+            
         return Response(last_bid_amount, status = 200)
-    serializer_class = BidSerializer
+            
+
+    # serializer_class = BidSerializer
 
 
 
@@ -205,7 +202,7 @@ class BidsList(APIView):
 
 class MyItemsListView(ListAPIView):
     def get_queryset(self):
-        print('hi')
+        # print('hi')
 
         user = self.request.user
         return Item.objects.filter(owner=user)
