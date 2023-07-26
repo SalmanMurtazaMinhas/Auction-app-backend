@@ -8,6 +8,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from .models import Item, Bid, AuctionList
 from django.contrib import messages
+from django.core import serializers
 
 
 from django.contrib.auth.decorators import login_required
@@ -215,3 +216,18 @@ class MyItemsListView(ListAPIView):
 class CategoryListView(ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
+class FilterCategoryListView(ListAPIView):
+    def post(self, request):
+        print(self.request.data.get('cat'))
+        primary_key = self.request.data.get('cat')
+        # print(primary_key)
+        items_of_cat =  Item.objects.filter(category=primary_key)
+        print('hi')
+        print(items_of_cat)
+        cat_data = serializers.serialize('json', items_of_cat)
+        print(cat_data)
+        return Response(cat_data, status = 200)
+    serializer_class = ItemSerializer
+
+
